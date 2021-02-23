@@ -117,12 +117,40 @@ module.exports = (RED) => {
       var handleError = (err, msg) => {
         //node.error(msg); This line is committed and edited to take the msg object also.
         // This allows the error to be caught with a Catch node.
-        node.error(err, msg);
+        // node.error(err, msg);
+        if (done) {
+          // Node-RED 1.0 compatible
+          done(err);
+        } else {
+          node.error(err, msg);
+        }
         console.log(err);
         console.log(msg.payload);
       };
 
-      var pool = new Pool(connectionConfig);
+      var pool = null;
+      try {
+        // possibly try to create new pool on error later
+        pool = new Pool(connectionConfig);
+      } catch (e) {
+        handleError(e,'');
+      }
+
+      pool.on('error', (err, client) => {
+        console.log("ERROR WITH POOL");
+        console.log(err,client);
+      });
+      
+      node.on('close', function(done) {
+        try {
+          pool.end().then(() => {
+            console.log("pool has ended");
+            done();
+          });
+        } catch (e) {
+          console.log("error closing pool");
+        }
+      });
 
       node.on('input', async (msg) => {
         if (!Array.isArray(msg.payload)) {
