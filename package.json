@@ -9,7 +9,7 @@
         "pg-native": "^3.0.0"
     },
     "engines": {
-        "node": ">=8"
+        "node": ">=10"
     },
     "repository": {
         "type": "git",
