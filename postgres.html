@@ -110,7 +110,8 @@
 			icon: "postgres.png",
 			align: "right",
 			label: function() {
-				return this.name||(this.sqlquery?this.sqlquery:"SCS-postgres");
+				// return this.name||(this.sqlquery?this.sqlquery:"SCS-postgres");
+                return "SCS-postgres";
 			},
 			labelStyle: function() {
 				return this.name?"node_label_italic":"";
