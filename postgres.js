@@ -114,7 +114,7 @@ module.exports = (RED) => {
         ssl: { rejectUnauthorized: false }
       };
 
-      var handleError = (err, msg) => {
+      var handleError = (err, msg, done) => {
         //node.error(msg); This line is committed and edited to take the msg object also.
         // This allows the error to be caught with a Catch node.
         // node.error(err, msg);
@@ -133,7 +133,8 @@ module.exports = (RED) => {
         // possibly try to create new pool on error later
         pool = new Pool(connectionConfig);
       } catch (e) {
-        handleError(e,'');
+        console.log("POOL ERROR",e);
+        done(e)
       }
 
       pool.on('error', (err, client) => {
@@ -152,10 +153,10 @@ module.exports = (RED) => {
         }
       });
 
-      node.on('input', async (msg) => {
+      node.on('input', async (msg, send, done) => {
         if (!Array.isArray(msg.payload)) {
           // Useful error message for transitioning from `postgres` to `postgres-multi`
-          handleError(new Error('msg.payload must be an array of queries'));
+          handleError(new Error('msg.payload must be an array of queries'),msg,done);
           return;
         }
 
@@ -186,7 +187,7 @@ module.exports = (RED) => {
             } catch (e) {
               // Assign -1 to result count to indicate query failure
               _queryCounts.push(-1);
-              handleError(e, msg);
+              handleError(e, msg, done);
             } finally {
               msg._queryCounts = _queryCounts;
             }
@@ -199,7 +200,7 @@ module.exports = (RED) => {
             node.send(outMsg);
           }
         } catch(e) {
-          handleError(e, msg);
+          handleError(e, msg, done);
         }
       });
     } else {
