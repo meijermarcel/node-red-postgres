@@ -140,6 +140,14 @@ module.exports = (RED) => {
       pool.on('error', (err, client) => {
         console.log("ERROR WITH POOL");
         console.log(err,client);
+        try {
+          pool.end().then(() => {
+            console.log("pool has ended from error");
+            pool = new Pool(connectionConfig);
+          });
+        } catch (e) {
+          console.log("Error with closing pool",e);
+        }
       });
       
       node.on('close', function(done) {
