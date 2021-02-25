@@ -139,7 +139,7 @@ module.exports = (RED) => {
 
       pool.on('error', (err, client) => {
         console.log("ERROR WITH POOL");
-        console.log(err,client);
+        // console.log(err,client);
         // try {
         //   console.log("create new pool");
         //   pool = new Pool(connectionConfig);
