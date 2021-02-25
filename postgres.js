@@ -140,12 +140,12 @@ module.exports = (RED) => {
       pool.on('error', (err, client) => {
         console.log("ERROR WITH POOL");
         console.log(err,client);
-        try {
-          console.log("create new pool");
-          pool = new Pool(connectionConfig);
-        } catch (e) {
-          console.log("Error with closing pool",e);
-        }
+        // try {
+        //   console.log("create new pool");
+        //   pool = new Pool(connectionConfig);
+        // } catch (e) {
+        //   console.log("Error with closing pool",e);
+        // }
       });
       
       node.on('close', function(done) {
